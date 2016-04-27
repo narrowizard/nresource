@@ -8,6 +8,13 @@ var concat = require('gulp-concat');
 var fs = require('fs');
 var respond = require('gulp-respond');
 
+/**
+ * generate 生成并返回文件
+ * @param files 文件数组列表
+ * @param filetype 文件类型,暂时只支持js,css
+ * @param filename 文件名
+ * @param res 输出流
+ */
 exports.generate = function (files, filetype, filename, res) {
     var dest = 'content/cached/' + filename + ".min." + filetype;
     var params = {
@@ -21,7 +28,7 @@ exports.generate = function (files, filetype, filename, res) {
 }
 
 /**
- * findAndWriteFile 查找文件,并且讲文件pipe到res中
+ * findAndWriteFile 查找文件,并且将文件pipe到res中
  * @param filename 文件路径
  * @param res 输出流
  * @param callback 错误回调
