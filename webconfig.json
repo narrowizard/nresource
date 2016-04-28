@@ -1,4 +1,5 @@
 {
     "port": 8124,
-    "cachePath": "/content/cached/"
+    "contentPath":"content/",
+    "cachePath": "cached/"
 }
