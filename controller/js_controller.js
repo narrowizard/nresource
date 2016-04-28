@@ -8,6 +8,7 @@ var log = require('../utils/log');
 var zlib = require('zlib');
 var pako = require('gulp-pako');
 var gulpif = require('gulp-if');
+var order = require("gulp-order");
 
 exports.handler = function (req, res, filename) {
     var originName = filename;
@@ -15,7 +16,7 @@ exports.handler = function (req, res, filename) {
     filename = decodeURIComponent(filename);
     //设置httphead
     res.statusCode = 200;
-    res.setHeader("Content-Type", mime.lookup("js"));
+    res.setHeader("Content-Type", mime.lookup("js") + ";charset=utf-8");
     var now = new Date();
     now.setTime(now.getTime() + global.MAXAGE * 1000)
     res.setHeader('Expires', now.toUTCString());
@@ -35,16 +36,22 @@ exports.handler = function (req, res, filename) {
             //解码文件名
             var files = filename.split("&");
             for (var i = 0; i < files.length; i++) {
-                files[i] = global.CONTENTPATH + "js/" + files[i].replace("|", "/") + ".js";
+                files[i] = global.CONTENTPATH + "js/" + files[i].replace(/\|/g, "/") + ".js";
             }
             var lastModified = (new Date()).toUTCString();
             res.setHeader("Last-Modified", lastModified);
             gulp.task('default', function () {
                 log.info("gulp task running default:", files);
+                var fileorder = [];
+                for (var i = 0; i < files.length; i++) {
+                    fileorder[i] = files[i].substr(files[i].lastIndexOf("/") + 1);
+                }
+                log.info("[Order]", fileorder);
                 gulp.src(files)
                     .pipe(uglify())
+                    .pipe(order(fileorder))
                     .pipe(concat(originName + ".min.js"))
-                    .pipe(gulp.dest('content/cached'))
+                    .pipe(gulp.dest(global.CACHEPATH))
                     .pipe(gulpif(gzip, pako.gzip(), gulpif(deflate, pako.deflate())))
                     .pipe(respond(res));
             });
