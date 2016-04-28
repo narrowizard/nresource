@@ -6,6 +6,8 @@ var respond = require('gulp-respond');
 var mime = require('mime');
 var log = require('../utils/log');
 var zlib = require('zlib');
+var pako = require('gulp-pako');
+var gulpif = require('gulp-if');
 
 exports.handler = function (req, res, filename) {
     var originName = filename;
@@ -42,8 +44,9 @@ exports.handler = function (req, res, filename) {
                 gulp.src(files)
                     .pipe(uglify())
                     .pipe(concat(originName + ".min.js"))
-                    .pipe(respond(res))
-                    .pipe(gulp.dest('content/cached'));
+                    .pipe(gulp.dest('content/cached'))
+                    .pipe(gulpif(gzip, pako.gzip(), gulpif(deflate, pako.deflate())))
+                    .pipe(respond(res));
             });
             gulp.start("default");
         } else {
