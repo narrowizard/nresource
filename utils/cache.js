@@ -32,7 +32,7 @@ exports.get = function (filename, callback) {
             callback(err);
         } else if (stats.isFile()) {
             var file = fs.createReadStream(path);
-            callback(null, file);
+            callback(null, file, stats);
         } else {
             //不是文件
             callback(new Error("dest is not file."));

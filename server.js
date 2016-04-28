@@ -1,19 +1,14 @@
 var http = require('http');
-var fs = require('fs');
 var router = require('./router').router;
-var nconf = require('nconf');
-//全局变量
-var PORT;
+var log = require('./utils/log');
+var config = require('./utils/config');
 
-//读取配置文件
-nconf.file({ file: 'webconfig.json' });
-PORT = nconf.get("port");
-global.CONTENTPATH = nconf.get("contentPath");
-global.CACHEPATH = global.CONTENTPATH + nconf.get("cachePath");
+config.loadConfig();
 
 http.createServer(function (req, res) {
     //router.dispatch
-    router.parse(req.url, [res]);
-}).listen(PORT);
+    log.info("[Req]" + req.url);
+    router.parse(req.url, [req, res]);
+}).listen(global.PORT);
 
-console.log('server running at 8124');
+log.info('server running at 8124');

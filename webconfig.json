@@ -1,5 +1,12 @@
 {
     "port": 8124,
-    "contentPath":"content/",
-    "cachePath": "cached/"
+    "contentPath": "content/",
+    "cachePath": "cached/",
+    "mode": "debug",
+    "maxAge": {
+        "days": 365,
+        "hours": 0,
+        "minutes": 0,
+        "seconds": 0
+    }
 }
