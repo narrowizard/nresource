@@ -5,6 +5,7 @@ var concat = require('gulp-concat');
 var respond = require('gulp-respond');
 var mime = require('mime');
 var log = require('../utils/log');
+var zlib = require('zlib');
 
 exports.handler = function (req, res, filename) {
     var originName = filename;
@@ -17,6 +18,13 @@ exports.handler = function (req, res, filename) {
     now.setTime(now.getTime() + global.MAXAGE * 1000)
     res.setHeader('Expires', now.toUTCString());
     res.setHeader('Cache-Control', 'max-age=' + global.MAXAGE);
+    var gzip = req.headers['accept-encoding'].indexOf('gzip') > -1;
+    var deflate = req.headers['accept-encoding'].indexOf('deflate') > -1;
+    if (gzip) {
+        res.setHeader('Content-Encoding', 'gzip');
+    } else if (deflate) {
+        res.setHeader('Content-Encoding', 'deflate');
+    }
     //处理缓存
     cache.get(originName + ".min.js", function (err, file, stats) {
         if (err) {
@@ -51,7 +59,14 @@ exports.handler = function (req, res, filename) {
             //返回缓存文件
             // res.statusCode = 200;
             file.on("open", function () {
-                file.pipe(res);
+                if (gzip) {
+                    file.pipe(zlib.createGzip()).pipe(res);
+                } else if (deflate) {
+                    file.pipe(zlib.createDeflate()).pipe(res);
+                } else {
+                    file.pipe(res);
+                }
+
             });
             file.on('error', function (err) {
                 log.error(err);
