@@ -3,6 +3,7 @@
 
 ## router
 + /js/{filename}
+        /js/libs%7Cjson2&libs%7Cdhtmlxcalendar&libs%7Ctwemoji&ext%7CjdTools
 + /css/{filename}
 + /sass/{filename}
 + /static/{filename}

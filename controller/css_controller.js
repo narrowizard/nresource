@@ -1,3 +1,3 @@
-exports.handler = function (filename) {
+exports.handler = function (req, res, compress, filename) {
     
 }

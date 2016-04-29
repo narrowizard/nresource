@@ -6,7 +6,7 @@ exports.handler = function (req, res, compress, filename) {
     decodeName = decodeURIComponent(filename);
     //content type
     res.setHeader("Content-Type", mime.lookup("js") + ";charset=utf-8");
-    //解码文件名
+    //得到文件名
     var files = decodeName.split("&");
     for (var i = 0; i < files.length; i++) {
         files[i] = global.CONTENTPATH + "js/" + files[i].replace(/\|/g, "/") + ".js";

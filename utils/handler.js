@@ -5,12 +5,12 @@ var mime = require('mime');
 
 exports.handle = function (req, res) {
     //router.dispatch
-    log.info("[Req]" + req.url);
+    log.info((new Date()).toLocaleString(), "[Req]", req.url);
     //压缩方式
     var compress = "";
     //expires
     var now = new Date();
-    now.setTime(now.getTime() + global.MAXAGE * 1000)
+    now.setTime(now.getTime() + global.MAXAGE * 1000);
     res.setHeader('Expires', now.toUTCString());
     res.setHeader('Cache-Control', 'max-age=' + global.MAXAGE);
     //compress
