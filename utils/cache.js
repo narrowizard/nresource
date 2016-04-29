@@ -1,6 +1,6 @@
 var fs = require('fs');
 var zlib = require('zlib');
-
+var log = require('./log');
 /**
  * exists 文件是否存在
  * @param filename 文件名
