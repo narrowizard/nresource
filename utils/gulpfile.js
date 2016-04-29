@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
+var minifycss = require('gulp-minify-css');
 var concat = require('gulp-concat');
 var respond = require('gulp-respond');
 var pako = require('gulp-pako');
@@ -23,6 +24,20 @@ exports.handleJavascript = function (filenames, fileorder, filename, compress, r
             .pipe(order(fileorder))
             .pipe(concat(filename))
             .pipe(gulp.dest(global.CACHEPATH + "/js/"))
+            .pipe(gulpif(compress == "gzip", pako.gzip(), gulpif(compress == "deflate", pako.deflate())))
+            .pipe(respond(res));
+    });
+    gulp.start("default");
+}
+
+exports.handleCss = function (filenames, fileorder, filename, compress, res) {
+    log.info("gulp task:", filename);
+    gulp.task('default', function () {
+        gulp.src(filenames)
+            .pipe(minifycss())
+            .pipe(order(fileorder))
+            .pipe(concat(filename))
+            .pipe(gulp.dest(global.CACHEPATH + "/css/"))
             .pipe(gulpif(compress == "gzip", pako.gzip(), gulpif(compress == "deflate", pako.deflate())))
             .pipe(respond(res));
     });
