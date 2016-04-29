@@ -1,86 +1,22 @@
-var cache = require("../utils/cache");
-var gulp = require('gulp');
-var uglify = require('gulp-uglify');
-var concat = require('gulp-concat');
-var respond = require('gulp-respond');
 var mime = require('mime');
-var log = require('../utils/log');
-var zlib = require('zlib');
-var pako = require('gulp-pako');
-var gulpif = require('gulp-if');
-var order = require("gulp-order");
+var gulpfile = require('../utils/gulpfile');
 
-exports.handler = function (req, res, filename) {
-    var originName = filename;
+exports.handler = function (req, res, compress, filename) {
     //解码filename
-    filename = decodeURIComponent(filename);
-    //设置httphead
-    res.statusCode = 200;
+    decodeName = decodeURIComponent(filename);
+    //content type
     res.setHeader("Content-Type", mime.lookup("js") + ";charset=utf-8");
-    var now = new Date();
-    now.setTime(now.getTime() + global.MAXAGE * 1000)
-    res.setHeader('Expires', now.toUTCString());
-    res.setHeader('Cache-Control', 'max-age=' + global.MAXAGE);
-    var gzip = req.headers['accept-encoding'].indexOf('gzip') > -1;
-    var deflate = req.headers['accept-encoding'].indexOf('deflate') > -1;
-    if (gzip) {
-        res.setHeader('Content-Encoding', 'gzip');
-    } else if (deflate) {
-        res.setHeader('Content-Encoding', 'deflate');
+    //解码文件名
+    var files = decodeName.split("&");
+    for (var i = 0; i < files.length; i++) {
+        files[i] = global.CONTENTPATH + "js/" + files[i].replace(/\|/g, "/") + ".js";
     }
-    //处理缓存
-    cache.get(originName + ".min.js", function (err, file, stats) {
-        if (err) {
-            //缓存不存在
-            //console.error(err);
-            //解码文件名
-            var files = filename.split("&");
-            for (var i = 0; i < files.length; i++) {
-                files[i] = global.CONTENTPATH + "js/" + files[i].replace(/\|/g, "/") + ".js";
-            }
-            var lastModified = (new Date()).toUTCString();
-            res.setHeader("Last-Modified", lastModified);
-            gulp.task('default', function () {
-                log.info("gulp task running default:", files);
-                var fileorder = [];
-                for (var i = 0; i < files.length; i++) {
-                    fileorder[i] = files[i].substr(files[i].lastIndexOf("/") + 1);
-                }
-                log.info("[Order]", fileorder);
-                gulp.src(files)
-                    .pipe(uglify())
-                    .pipe(order(fileorder))
-                    .pipe(concat(originName + ".min.js"))
-                    .pipe(gulp.dest(global.CACHEPATH))
-                    .pipe(gulpif(gzip, pako.gzip(), gulpif(deflate, pako.deflate())))
-                    .pipe(respond(res));
-            });
-            gulp.start("default");
-        } else {
-            var lastModified = stats.mtime.toUTCString();
-            //如果没有修改，则返回304
-            if (req.headers["if-modified-since"] && lastModified == req.headers["if-modified-since"]) {
-                log.info("304");
-                res.writeHead(304, "Not Modified");
-                res.end();
-                return;
-            }
-            res.setHeader("Last-Modified", lastModified);
-            //返回缓存文件
-            // res.statusCode = 200;
-            file.on("open", function () {
-                if (gzip) {
-                    file.pipe(zlib.createGzip()).pipe(res);
-                } else if (deflate) {
-                    file.pipe(zlib.createDeflate()).pipe(res);
-                } else {
-                    file.pipe(res);
-                }
+    var lastModified = (new Date()).toUTCString();
+    res.setHeader("Last-Modified", lastModified);
 
-            });
-            file.on('error', function (err) {
-                log.error(err);
-            });
-        }
-    });
+    var fileorder = [];
+    for (var i = 0; i < files.length; i++) {
+        fileorder[i] = files[i].substr(files[i].lastIndexOf("/") + 1);
+    }
+    gulpfile.handleJavascript(files, fileorder, filename, compress, res);
 };

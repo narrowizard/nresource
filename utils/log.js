@@ -20,7 +20,7 @@ exports.info = function () {
             msg += arguments[i];
         }
         var fileAndLine = traceCaller(1);
-        console.log(('[Info]' + fileAndLine + ":" + msg).info);
+        console.log('[Info]'.info + fileAndLine + ":" + msg);
     }
 }
 
@@ -31,7 +31,7 @@ exports.warning = function () {
             msg += arguments[i];
         }
         var fileAndLine = traceCaller(1);
-        console.log(('[Warning]' + fileAndLine + ":" + msg).warn);
+        console.log('[Warning]'.warn + fileAndLine + ":" + msg);
     }
 }
 
@@ -42,7 +42,7 @@ exports.error = function () {
             msg += arguments[i];
         }
         var fileAndLine = traceCaller(1);
-        console.log(('[Error]' + fileAndLine + ":" + msg).error);
+        console.log('[Error]'.error + fileAndLine + ":" + msg);
     }
 }
 
@@ -65,7 +65,7 @@ function traceCaller(n) {
         if (a < 0) { a = s.lastIndexOf('\n', s.length); break; }
     }
     b = s.indexOf('\n', a + 1); if (b < 0) b = s.length;
-    a = Math.max(s.lastIndexOf(' ', b) + 1, s.lastIndexOf('/', b));
+    a = Math.max(s.lastIndexOf(' ', b), s.lastIndexOf('/', b));
     b = s.lastIndexOf(':', b);
     s = s.substring(a + 1, b);
     return s;
