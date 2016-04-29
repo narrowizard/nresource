@@ -44,10 +44,15 @@ exports.handle = function (req, res) {
         } else {
             log.info("hit cache:", cachePath);
             //解析content type
-            var aa = /\/(\w+)\//;
-            var type = aa.exec(req.url);
-            if (type) {
-                res.setHeader("Content-Type", mime.lookup(type[1]) + ";charset=utf-8");
+            if (req.url.indexOf("/static") > -1) {
+                //静态路由
+                res.setHeader("Content-Type", mime.lookup(req.url) + ";charset=utf-8");
+            } else {
+                var aa = /\/(\w+)\//;
+                var type = aa.exec(req.url);
+                if (type) {
+                    res.setHeader("Content-Type", mime.lookup(type[1]) + ";charset=utf-8");
+                }
             }
             var lastModified = stats.mtime.toUTCString();
             //如果没有修改，则返回304
