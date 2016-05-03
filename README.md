@@ -8,6 +8,8 @@
     |-cached
       |-static
       |-js
+      |-css
+      |-sass
     |-css
     |-js
     |-sass
@@ -53,7 +55,8 @@
             minutes: number,
             seconds: number
         }
-+ sassMode      sass或者scss       
++ sassMode      sass或者scss      
++ useCache      是否打开缓存 
  
 ## cache
 + static 直接修改文件
