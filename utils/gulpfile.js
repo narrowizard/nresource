@@ -58,7 +58,7 @@ exports.handleSass = function (filename, filepath, compress, res) {
     log.info(filepath);
     gulp.task('sass', function () {
         gulp.src(filepath)
-            .pipe(sass().on('error', function () { log.error("sass compile failed") }))
+            .pipe(sass().on('error', function (err) { log.error(err) }))
             .pipe(rename(filename))
             .pipe(minifycss())
             .pipe(gulp.dest(global.CACHEPATH + "/sass/"))
