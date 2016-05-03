@@ -47,7 +47,11 @@ exports.handle = function (req, res) {
             if (req.url.indexOf("/static") > -1) {
                 //静态路由
                 res.setHeader("Content-Type", mime.lookup(req.url) + ";charset=utf-8");
-            } else {
+            } else if (req.url.indexOf("/sass") > -1) {
+                //静态路由
+                res.setHeader("Content-Type", mime.lookup('css') + ";charset=utf-8");
+            }
+            else {
                 var aa = /\/(\w+)\//;
                 var type = aa.exec(req.url);
                 if (type) {
