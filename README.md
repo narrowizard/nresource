@@ -1,6 +1,10 @@
 # nresource
 一个基于nodejs的web静态资源服务器
 
+## start
+1. linux下,运行app.js 可以创建一个forever 守护进程
+1. 直接运行server.js
+        
 ## directory
 ```
 |-nresource
