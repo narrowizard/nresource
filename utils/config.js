@@ -8,6 +8,7 @@ exports.loadConfig = function () {
     global.CONTENTPATH = nconf.get("contentPath");
     global.CACHEPATH = global.CONTENTPATH + nconf.get("cachePath");
     global.DEBUG = nconf.get("mode") == "debug";
+    global.SASS = nconf.get("sassMode");
     //缓存时间
     var maxAge = nconf.get('maxAge');
     global.MAXAGE = maxAge.days * 24 * 3600 + maxAge.hours * 3600 + maxAge.minutes * 60 + maxAge.seconds;

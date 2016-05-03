@@ -10,6 +10,7 @@
       |-js
     |-css
     |-js
+    |-sass
   |-controller
   |-utils
   server.js
@@ -22,13 +23,21 @@
 
 ## router
 + /js/{filename}
-        /js/libs|json2&libs|dhtmlxcalendar&libs|twemoji&ext|jdTools
+        eg: /js/libs|json2&libs|dhtmlxcalendar&libs|twemoji&ext|jdTools  
+            该路由会查找项目content/js目录下的文件libs/json2.js,libs/dhtmlxcalendar.js,libs/twemoji.js,ext/jdTools四个文件,并按顺序将这些文件合并压缩后返回
 + /css/{filename}
-+ /sass/{filename}
-+ /static/{filename}
+        同js
++ /sass/{filefolder}
+        eg: /sass/project
+            该路由会查找项目content/sass目录下的project/main.scss文件,将其编译压缩后返回
++ /static/{filepath}
+        eg: /static/jquery-2.2.3.min.js
+            该路由会请求项目content/cached/static目录下的文件jquery-2.2.3.min.js
 + /ts/{filename}
 
-{filename}:可以包含目录,目录间用|连接
+{filename}:可以包含目录,目录间用|连接  
+{filepath}:静态文件路径,不能包含..  
+{filefolder}:项目目录
 
 ## config
 配置文件:webconfig.json
@@ -44,3 +53,9 @@
             minutes: number,
             seconds: number
         }
++ sassMode      sass或者scss       
+ 
+## cache
++ static 直接修改文件
++ js,css 修改源文件后,需要手动删除文件相关的缓存文件
++ sass 修改源文件后,需要手动删除该项目相关的css文件
