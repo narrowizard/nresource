@@ -16,7 +16,7 @@ crossroads.addRoute('/sass/{filename}', sass_controller);
 //typecript
 crossroads.addRoute("/ts/{filename}", ts_controller);
 //静态文件处理器
-crossroads.addRoute('/static/{filename}', static_controller);
+crossroads.addRoute('/static/{filename*}', static_controller);
 
 crossroads.bypassed.add(function (req, res) {
     log.warning(req.url, " route bypassed");
