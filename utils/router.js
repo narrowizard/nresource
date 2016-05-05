@@ -1,3 +1,4 @@
+var log = require('./log');
 var crossroads = require('crossroads');
 var js_controller = require('../controller/js_controller').handler;
 var css_controller = require('../controller/css_controller').handler;
@@ -16,5 +17,11 @@ crossroads.addRoute('/sass/{filename}', sass_controller);
 crossroads.addRoute("/ts/{filename}", ts_controller);
 //静态文件处理器
 crossroads.addRoute('/static/{filename}', static_controller);
+
+crossroads.bypassed.add(function (req, res) {
+    log.warning(req.url, " route bypassed");
+    res.writeHead(404, "file not found!");
+    res.end();
+});
 
 exports.router = crossroads;
