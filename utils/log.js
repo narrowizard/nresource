@@ -36,14 +36,12 @@ exports.warning = function () {
 }
 
 exports.error = function () {
-    if (global.DEBUG) {
-        var msg = "";
-        for (var i = 0; i < arguments.length; i++) {
-            msg += arguments[i];
-        }
-        var fileAndLine = traceCaller(1);
-        console.log(fileAndLine + '[Error]'.error + "\t" + msg);
+    var msg = "";
+    for (var i = 0; i < arguments.length; i++) {
+        msg += arguments[i];
     }
+    var fileAndLine = traceCaller(1);
+    console.log(fileAndLine + '[Error]'.error + "\t" + msg);
 }
 
 function traceCaller(n) {

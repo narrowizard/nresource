@@ -7,5 +7,5 @@ config.loadConfig();
 
 http.createServer(handleRequest).listen(global.PORT);
 
-log.info('server running at 8124');
+log.info('server running at ' + global.PORT);
 
