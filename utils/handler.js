@@ -49,19 +49,22 @@ exports.handle = function (req, res) {
         } else {
             log.info("hit cache:", cachePath);
             //解析content type
-            if (req.url.indexOf("/static") > -1) {
-                //静态路由
-                res.setHeader("Content-Type", mime.lookup(req.url) + ";charset=utf-8");
-            } else if (req.url.indexOf("/sass") > -1) {
-                //静态路由
-                res.setHeader("Content-Type", mime.lookup('css') + ";charset=utf-8");
-            } else {
-                var aa = /\/(\w+)\//;
-                var type = aa.exec(req.url);
-                if (type) {
-                    res.setHeader("Content-Type", mime.lookup(type[1]) + ";charset=utf-8");
-                }
-            }
+            res.setHeader("Content-Type", mime.lookup(req.url) + ";charset=utf-8");
+            // if (req.url.indexOf("/static") > -1) {
+            //     //静态路由
+            //     res.setHeader("Content-Type", mime.lookup(req.url) + ";charset=utf-8");
+            // } else if (req.url.indexOf("/sass") > -1) {
+            //     //设置sass路由的contenttype为css
+            //     res.setHeader("Content-Type", mime.lookup('css') + ";charset=utf-8");
+            // } else {
+            //     var aa = /\/(\w+)\//;
+            //     var type = aa.exec(req.url);
+            //     if (type) {
+            //         res.setHeader("Content-Type", mime.lookup(type[1]) + ";charset=utf-8");
+            //     } else {
+            //         res.setHeader("Content-Type", mime.lookup(req.url) + ";charset=utf-8");
+            //     }
+            // }
             var lastModified = stats.mtime.toUTCString();
             //如果没有修改，则返回304
             if (requestHeaders["if-modified-since"] && lastModified == requestHeaders["if-modified-since"]) {

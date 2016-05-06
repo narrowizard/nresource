@@ -4,7 +4,7 @@ var fs = require('fs');
 var EXTNAME = "sass";
 
 exports.handler = function (req, res, compress, filename) {
-    var filepath = global.CONTENTPATH + EXTNAME + "/" + filename + "/main." + global.SASS;
+    var filepath = global.CONTENTPATH + EXTNAME + "/" + filename.substr(0, filename.lastIndexOf(".")) + "/main." + global.SASS;
     fs.stat(filepath, function (err, stats) {
         if (err) {
 
