@@ -8,6 +8,7 @@ var gulpif = require('gulp-if');
 var order = require("gulp-order");
 var sass = require('gulp-sass');
 var rename = require('gulp-rename');
+var typescript = require('gulp-tsc');
 
 var log = require('../utils/log');
 
@@ -66,4 +67,26 @@ exports.handleSass = function (filename, filepath, compress, res) {
             .pipe(respond(res));
     });
     gulp.start("sass");
+}
+
+exports.tinytsCore = function (filenames, compress, res) {
+    log.info("gulp task:[tinytsCore]");
+    var tsconfig = {
+        experimentalDecorators: true,
+        target: "ES5",
+        emitDecoratorMetadata: true,
+        module: "amd",
+        emitError: global.DEBUG
+    };
+    gulp.task('tinytsCore', function () {
+        gulp.src(filenames)
+            .pipe(typescript(tsconfig))
+            .pipe(concat("core.js"))
+            // .pipe(uglify())
+            .pipe(gulp.dest(global.CACHEPATH + "/spec/js/tinyts/"))
+            .pipe(gulpif(compress == "gzip", pako.gzip(), gulpif(compress == "deflate", pako.deflate())))
+            .pipe(respond(res));
+    });
+    gulp.start('tinytsCore');
+
 }
