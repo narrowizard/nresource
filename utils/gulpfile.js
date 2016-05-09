@@ -82,8 +82,8 @@ exports.tinytsCore = function (filenames, compress, res) {
         gulp.src(filenames)
             .pipe(typescript(tsconfig))
             .pipe(concat("core.js"))
-            // .pipe(uglify())
-            .pipe(gulp.dest(global.CACHEPATH + "/spec/js/tinyts/"))
+            .pipe(uglify())
+            .pipe(gulp.dest(global.CACHEPATH + "/tinyts/"))
             .pipe(gulpif(compress == "gzip", pako.gzip(), gulpif(compress == "deflate", pako.deflate())))
             .pipe(respond(res));
     });
