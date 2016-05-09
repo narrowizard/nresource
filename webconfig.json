@@ -10,5 +10,5 @@
         "seconds": 0
     },
     "sassMode": "scss",
-    "useCache": false
+    "useCache": true
 }

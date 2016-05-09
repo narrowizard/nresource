@@ -69,19 +69,48 @@ exports.handleSass = function (filename, filepath, compress, res) {
     gulp.start("sass");
 }
 
-exports.tinytsCore = function (filenames, compress, res) {
+/**
+ * tsCompiler 编译ts文件并返回
+ * @param filename 缓存文件名
+ * @param filenames 需要编译的文件,支持多个(数组)
+ * @param compress 压缩方式
+ * @param res 输出流
+ */
+exports.tsCompiler = function (filename, filenames, compress, res) {
+    log.info("gulp task:[tsCompiler]");
+    var tsconfig = {
+        experimentalDecorators: true,
+        target: "ES5",
+        emitDecoratorMetadata: true,
+        module: "amd",
+        emitError: false
+    };
+    gulp.task('tsCompiler', function () {
+        gulp.src(filenames)
+            .pipe(typescript(tsconfig))
+            .pipe(concat(filename))
+            .pipe(uglify())
+            .pipe(gulp.dest(global.CACHEPATH + "/ts/"))
+            .pipe(gulpif(compress == "gzip", pako.gzip(), gulpif(compress == "deflate", pako.deflate())))
+            .pipe(respond(res));
+    });
+    gulp.start('tsCompiler');
+
+}
+
+exports.tinytsCompiler = function (filename, filenames, compress, res) {
     log.info("gulp task:[tinytsCore]");
     var tsconfig = {
         experimentalDecorators: true,
         target: "ES5",
         emitDecoratorMetadata: true,
         module: "amd",
-        emitError: global.DEBUG
+        emitError: false
     };
     gulp.task('tinytsCore', function () {
         gulp.src(filenames)
             .pipe(typescript(tsconfig))
-            .pipe(concat("core.js"))
+            .pipe(concat(filename))
             .pipe(uglify())
             .pipe(gulp.dest(global.CACHEPATH + "/tinyts/"))
             .pipe(gulpif(compress == "gzip", pako.gzip(), gulpif(compress == "deflate", pako.deflate())))
