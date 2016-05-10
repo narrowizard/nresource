@@ -102,15 +102,15 @@ exports.tinytsCompiler = function (filename, filenames, compress, res) {
     log.info("gulp task:[tinytsCore]");
     var tsconfig = {
         experimentalDecorators: true,
-        target: "ES5",
         emitDecoratorMetadata: true,
+        target: "ES5",
         module: "amd",
-        emitError: false
+        emitError: false,
+        out: filename
     };
     gulp.task('tinytsCore', function () {
         gulp.src(filenames)
             .pipe(typescript(tsconfig))
-            .pipe(concat(filename))
             .pipe(uglify())
             .pipe(gulp.dest(global.CACHEPATH + "/tinyts/"))
             .pipe(gulpif(compress == "gzip", pako.gzip(), gulpif(compress == "deflate", pako.deflate())))
