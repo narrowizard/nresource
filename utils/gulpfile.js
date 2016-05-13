@@ -111,7 +111,7 @@ exports.tinytsCompiler = function (filename, filenames, compress, res) {
     gulp.task('tinytsCore', function () {
         gulp.src(filenames)
             .pipe(typescript(tsconfig))
-            .pipe(uglify())
+            .pipe(uglify({ mangle: false }))
             .pipe(gulp.dest(global.CACHEPATH + "/tinyts/"))
             .pipe(gulpif(compress == "gzip", pako.gzip(), gulpif(compress == "deflate", pako.deflate())))
             .pipe(respond(res));

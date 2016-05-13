@@ -49,7 +49,8 @@
 {projectfolder}:项目目录
 
 ## config
-配置文件:webconfig.json
+配置文件:webconfig.json  
+参考配置文件:webconfig.default.json,请新建一个webconfig.json,并参照参考配置文件进行配置  
 配置项
 + port  监听的http端口
 + contentPath   静态文件目录
