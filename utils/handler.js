@@ -4,14 +4,15 @@ var log = require('./log');
 var mime = require('mime');
 
 exports.handle = function (req, res) {
+    var url = req.url;
     //router.dispatch
-    if (req.url.indexOf("..") > -1) {
-        log.warning((new Date()).toLocaleString(), "[Req]", req.url);
+    if (url.indexOf("..") > -1) {
+        log.warning((new Date()).toLocaleString(), "[Req]", url);
         res.writeHead(404, "file not found!");
         res.end();
         return;
     } else {
-        log.info((new Date()).toLocaleString(), "[Req]", req.url);
+        log.info((new Date()).toLocaleString(), "[Req]", url);
     }
     //压缩方式
     var compress = "";
@@ -35,34 +36,34 @@ exports.handle = function (req, res) {
         res.setHeader('Content-Encoding', 'deflate');
         compress = "deflate";
     }
-    var cachePath = req.url;
+    var cachePath = url;
     if (!global.USECACHE) {
         // 不使用缓存
-        router.parse(req.url, [req, res, compress]);
+        router.parse(url, [req, res, compress]);
         return;
     }
     //处理缓存
     cache.stats(cachePath, function (stats) {
         if (!stats || !stats.isFile()) {
             //缓存不存在,交给路由处理
-            router.parse(req.url, [req, res, compress]);
+            router.parse(url, [req, res, compress]);
         } else {
             log.info("hit cache:", cachePath);
             //解析content type
-            res.setHeader("Content-Type", mime.lookup(req.url) + ";charset=utf-8");
-            // if (req.url.indexOf("/static") > -1) {
+            res.setHeader("Content-Type", mime.lookup(url) + ";charset=utf-8");
+            // if (url.indexOf("/static") > -1) {
             //     //静态路由
-            //     res.setHeader("Content-Type", mime.lookup(req.url) + ";charset=utf-8");
-            // } else if (req.url.indexOf("/sass") > -1) {
+            //     res.setHeader("Content-Type", mime.lookup(url) + ";charset=utf-8");
+            // } else if (url.indexOf("/sass") > -1) {
             //     //设置sass路由的contenttype为css
             //     res.setHeader("Content-Type", mime.lookup('css') + ";charset=utf-8");
             // } else {
             //     var aa = /\/(\w+)\//;
-            //     var type = aa.exec(req.url);
+            //     var type = aa.exec(url);
             //     if (type) {
             //         res.setHeader("Content-Type", mime.lookup(type[1]) + ";charset=utf-8");
             //     } else {
-            //         res.setHeader("Content-Type", mime.lookup(req.url) + ";charset=utf-8");
+            //         res.setHeader("Content-Type", mime.lookup(url) + ";charset=utf-8");
             //     }
             // }
             var lastModified = stats.mtime.toUTCString();

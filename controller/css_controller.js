@@ -4,6 +4,7 @@ var filedecoder = require('../utils/filedecoder');
 var EXTNAME = "css";
 
 exports.handler = function (req, res, compress, filename) {
+    filename = encodeURIComponent(decodeURIComponent(filename));
     //content type
     res.setHeader("Content-Type", mime.lookup(EXTNAME) + ";charset=utf-8");
     //得到文件名
