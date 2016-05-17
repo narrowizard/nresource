@@ -47,6 +47,9 @@ exports.handle = function (req, res) {
     //去除originUrl中的参数部分
     var urlObject = url.parse(originUrl);
     var cachePath = urlObject.pathname;
+    cachePath = encodeURIComponent(decodeURIComponent(cachePath));
+    //替换/
+    cachePath = cachePath.replace(/%2F/g,'\/');
     //解析参数
     var params = qs.parse(urlObject.query);
     if (params.cache == "false") {
