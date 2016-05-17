@@ -1,18 +1,19 @@
 var router = require('./router').router;
 var cache = require("../utils/cache");
 var log = require('./log');
+var url = require('url');
 var mime = require('mime');
 
 exports.handle = function (req, res) {
-    var url = req.url;
+    var originUrl = req.url;
     //router.dispatch
-    if (url.indexOf("..") > -1) {
-        log.warning((new Date()).toLocaleString(), "[Req]", url);
+    if (originUrl.indexOf("..") > -1) {
+        log.warning((new Date()).toLocaleString(), "[Req]", originUrl);
         res.writeHead(404, "file not found!");
         res.end();
         return;
     } else {
-        log.info((new Date()).toLocaleString(), "[Req]", url);
+        log.info((new Date()).toLocaleString(), "[Req]", originUrl);
     }
     //压缩方式
     var compress = "";
@@ -36,36 +37,25 @@ exports.handle = function (req, res) {
         res.setHeader('Content-Encoding', 'deflate');
         compress = "deflate";
     }
-    var cachePath = url;
+
+    // 不使用缓存 直接交给路由
     if (!global.USECACHE) {
-        // 不使用缓存
-        router.parse(url, [req, res, compress]);
+        router.parse(originUrl, [req, res, compress]);
         return;
     }
+    //去除originUrl中的参数部分
+    var urlObject = url.parse(originUrl);
+    var cachePath = urlObject.pathname;
     //处理缓存
     cache.stats(cachePath, function (stats) {
         if (!stats || !stats.isFile()) {
             //缓存不存在,交给路由处理
-            router.parse(url, [req, res, compress]);
+            router.parse(originUrl, [req, res, compress]);
         } else {
             log.info("hit cache:", cachePath);
             //解析content type
-            res.setHeader("Content-Type", mime.lookup(url) + ";charset=utf-8");
-            // if (url.indexOf("/static") > -1) {
-            //     //静态路由
-            //     res.setHeader("Content-Type", mime.lookup(url) + ";charset=utf-8");
-            // } else if (url.indexOf("/sass") > -1) {
-            //     //设置sass路由的contenttype为css
-            //     res.setHeader("Content-Type", mime.lookup('css') + ";charset=utf-8");
-            // } else {
-            //     var aa = /\/(\w+)\//;
-            //     var type = aa.exec(url);
-            //     if (type) {
-            //         res.setHeader("Content-Type", mime.lookup(type[1]) + ";charset=utf-8");
-            //     } else {
-            //         res.setHeader("Content-Type", mime.lookup(url) + ";charset=utf-8");
-            //     }
-            // }
+            res.setHeader("Content-Type", mime.lookup(cachePath) + ";charset=utf-8");
+
             var lastModified = stats.mtime.toUTCString();
             //如果没有修改，则返回304
             if (requestHeaders["if-modified-since"] && lastModified == requestHeaders["if-modified-since"]) {
