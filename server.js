@@ -2,10 +2,18 @@ var http = require('http');
 var log = require('./utils/log');
 var config = require('./utils/config');
 var handleRequest = require('./utils/handler').handle;
+var domain = require('domain');
 
-config.loadConfig();
+var d = domain.create();
 
-http.createServer(handleRequest).listen(global.PORT);
+d.on('error', function (err) {
+    log.error(err);
+});
 
-log.info('server running at ' + global.PORT);
+d.run(function () {
+    config.loadConfig();
 
+    http.createServer(handleRequest).listen(global.PORT);
+
+    log.info('server running at ' + global.PORT);
+});
