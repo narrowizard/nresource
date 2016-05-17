@@ -2,6 +2,7 @@ var router = require('./router').router;
 var cache = require("../utils/cache");
 var log = require('./log');
 var url = require('url');
+var qs = require('querystring');
 var mime = require('mime');
 
 exports.handle = function (req, res) {
@@ -46,6 +47,13 @@ exports.handle = function (req, res) {
     //去除originUrl中的参数部分
     var urlObject = url.parse(originUrl);
     var cachePath = urlObject.pathname;
+    //解析参数
+    var params = qs.parse(urlObject.query);
+    if (params.cache == "false") {
+        //不使用缓存
+        router.parse(originUrl, [req, res, compress]);
+        return;
+    }
     //处理缓存
     cache.stats(cachePath, function (stats) {
         if (!stats || !stats.isFile()) {

@@ -48,6 +48,9 @@
 {filepath}:静态文件路径,不能包含..
 {projectfolder}:项目目录
 
+#url query
++ cache: boolean,如果设置为false,则不使用缓存
+
 ## config
 配置文件:webconfig.json  
 参考配置文件:webconfig.default.json,请新建一个webconfig.json,并参照参考配置文件进行配置  
