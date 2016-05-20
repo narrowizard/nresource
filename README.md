@@ -48,7 +48,7 @@
 {filepath}:静态文件路径,不能包含..
 {projectfolder}:项目目录
 
-#url query
+##url query
 + cache: boolean,如果设置为false,则不使用缓存
 
 ## config

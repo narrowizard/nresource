@@ -52,8 +52,8 @@ exports.handle = function (req, res) {
     cachePath = cachePath.replace(/%2F/g,'\/');
     //解析参数
     var params = qs.parse(urlObject.query);
-    if (params.cache == "false") {
-        //不使用缓存
+    if (params.cache == "false" && global.DEBUG) {
+        //不使用缓存(仅debug模式)
         router.parse(originUrl, [req, res, compress]);
         return;
     }
