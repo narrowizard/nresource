@@ -17,10 +17,10 @@ exports.info = function () {
     if (global.DEBUG) {
         var msg = "";
         for (var i = 0; i < arguments.length; i++) {
-            msg += arguments[i];
+            msg += arguments[i] + "\t";
         }
         var fileAndLine = traceCaller(1);
-        console.log(fileAndLine + '[Info]'.info + "\t" + msg);
+        console.log(fileAndLine + '[Info]'.info + "\t" + (new Date()).toLocaleString() + "\t" + msg);
     }
 }
 
@@ -28,20 +28,20 @@ exports.warning = function () {
     if (global.DEBUG) {
         var msg = "";
         for (var i = 0; i < arguments.length; i++) {
-            msg += arguments[i];
+            msg += arguments[i] + "\t";
         }
         var fileAndLine = traceCaller(1);
-        console.log(fileAndLine + '[Warning]'.warn + "\t" + msg);
+        console.log(fileAndLine + '[Warning]'.warn + "\t" + (new Date()).toLocaleString() + "\t" + msg);
     }
 }
 
 exports.error = function () {
     var msg = "";
     for (var i = 0; i < arguments.length; i++) {
-        msg += arguments[i];
+        msg += arguments[i] + "\t";
     }
     var fileAndLine = traceCaller(1);
-    console.log(fileAndLine + '[Error]'.error + "\t" + msg);
+    console.log(fileAndLine + '[Error]'.error + "\t" + (new Date()).toLocaleString() + "\t" + msg);
 }
 
 function traceCaller(n) {

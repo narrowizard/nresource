@@ -3,3 +3,4 @@ content/
 npm-debug.log
 tsconfig.json
 webconfig.json
+.vscode/

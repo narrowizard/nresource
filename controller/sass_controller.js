@@ -1,6 +1,7 @@
 var mime = require('mime');
 var gulpfile = require('../utils/gulpfile');
 var fs = require('fs');
+var log = require('../utils/log');
 var EXTNAME = "sass";
 
 exports.handler = function (req, res, compress, filename) {
@@ -18,6 +19,7 @@ exports.handler = function (req, res, compress, filename) {
             gulpfile.handleSass(filename, filepath, compress, res);
             return;
         }
+        log.info("[NotFound]");
         res.writeHead(404, "file not found!");
         res.end();
     });

@@ -15,6 +15,7 @@ exports.handler = function (req, res, compress, filename) {
                 var lastModified = stats.mtime.toUTCString();
                 //如果没有修改，则返回304
                 if (requestHeaders["if-modified-since"] && lastModified == requestHeaders["if-modified-since"]) {
+                    log.info("[NotModified]");
                     res.writeHead(304, "Not Modified");
                     res.end();
                     return;
@@ -38,10 +39,12 @@ exports.handler = function (req, res, compress, filename) {
                 });
                 return;
             }
+            log.info("[NotFound]");
             res.writeHead(404, "file not found!");
             res.end();
         });
     } else {
+        log.info("[NotFound]");
         res.writeHead(404, "file not found!");
         res.end();
     }

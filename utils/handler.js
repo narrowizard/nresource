@@ -8,13 +8,12 @@ var mime = require('mime');
 exports.handle = function (req, res) {
     var originUrl = req.url;
     //router.dispatch
+    log.info("[Req]", req.connection.remoteAddress, originUrl, req.headers["user-agent"]);
     if (originUrl.indexOf("..") > -1) {
-        log.warning((new Date()).toLocaleString(), "[Req]", originUrl);
+        log.warning("[NotFound]", originUrl);
         res.writeHead(404, "file not found!");
         res.end();
         return;
-    } else {
-        log.info((new Date()).toLocaleString(), "[Req]", originUrl);
     }
     //压缩方式
     var compress = "";
@@ -49,7 +48,7 @@ exports.handle = function (req, res) {
     var cachePath = urlObject.pathname;
     cachePath = encodeURIComponent(decodeURIComponent(cachePath));
     //替换/
-    cachePath = cachePath.replace(/%2F/g,'\/');
+    cachePath = cachePath.replace(/%2F/g, '\/');
     //解析参数
     var params = qs.parse(urlObject.query);
     if (params.cache == "false" && global.DEBUG) {
@@ -63,13 +62,13 @@ exports.handle = function (req, res) {
             //缓存不存在,交给路由处理
             router.parse(originUrl, [req, res, compress]);
         } else {
-            log.info("hit cache:", cachePath);
             //解析content type
             res.setHeader("Content-Type", mime.lookup(cachePath) + ";charset=utf-8");
 
             var lastModified = stats.mtime.toUTCString();
             //如果没有修改，则返回304
             if (requestHeaders["if-modified-since"] && lastModified == requestHeaders["if-modified-since"]) {
+                log.info("[NotModified]", cachePath);
                 res.writeHead(304, "Not Modified");
                 res.end();
                 return;
@@ -77,6 +76,7 @@ exports.handle = function (req, res) {
             res.setHeader("Last-Modified", lastModified);
             //将文件写入response
             res.statusCode = 200;
+            log.info('[Success]', cachePath);
             cache.read(cachePath, compress, res);
         }
     });

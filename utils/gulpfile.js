@@ -20,7 +20,6 @@ var log = require('../utils/log');
  * @param res 数据流
  */
 exports.handleJavascript = function (filenames, fileorder, filename, compress, res) {
-    log.info("gulp task:[js]", filename);
     gulp.task('js', function () {
         gulp.src(filenames)
             .pipe(uglify())
@@ -34,7 +33,6 @@ exports.handleJavascript = function (filenames, fileorder, filename, compress, r
 }
 
 exports.handleCss = function (filenames, fileorder, filename, compress, res) {
-    log.info("gulp task:[css]", filename);
     gulp.task('css', function () {
         gulp.src(filenames)
             .pipe(minifycss())
@@ -55,8 +53,6 @@ exports.handleCss = function (filenames, fileorder, filename, compress, res) {
  * @param res 输出流
  */
 exports.handleSass = function (filename, filepath, compress, res) {
-    log.info('gulp task:[sass]', filename);
-    log.info(filepath);
     gulp.task('sass', function () {
         gulp.src(filepath)
             .pipe(sass().on('error', function (err) { log.error(err) }))
@@ -77,7 +73,6 @@ exports.handleSass = function (filename, filepath, compress, res) {
  * @param res 输出流
  */
 exports.tsCompiler = function (filename, filenames, compress, res) {
-    log.info("gulp task:[tsCompiler]");
     var tsconfig = {
         experimentalDecorators: true,
         target: "ES5",
@@ -99,7 +94,6 @@ exports.tsCompiler = function (filename, filenames, compress, res) {
 }
 
 exports.tinytsCompiler = function (filename, filenames, compress, res) {
-    log.info("gulp task:[tinytsCore]");
     var tsconfig = {
         experimentalDecorators: true,
         emitDecoratorMetadata: true,
