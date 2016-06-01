@@ -8,7 +8,11 @@ var mime = require('mime');
 exports.handle = function (req, res) {
     var originUrl = req.url;
     //router.dispatch
-    log.info("[Req]", req.connection.remoteAddress, originUrl, req.headers["user-agent"]);
+    var ip = req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
+    log.info("[Req]", ip, originUrl, req.headers["user-agent"]);
     if (originUrl.indexOf("..") > -1) {
         log.warning("[NotFound]", originUrl);
         res.writeHead(404, "file not found!");
