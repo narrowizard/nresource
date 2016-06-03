@@ -1,11 +1,7 @@
 var gulpfile = require('../utils/gulpfile');
 var fs = require('fs');
-var mime = require('mime');
-var zlib = require('zlib');
 var log = require('../utils/log');
-var rename = require('gulp-rename');
-var Fontmin = require('fontmin');
-
+var responseFile = require('../utils/file').responseFile;
 /**
  * compress 字体压缩
  * @params params.src 需要解析的url地址
@@ -18,7 +14,6 @@ exports.compress = function (req, res, compress, filename, params) {
 
     }
     gulpfile.handleFonts(fontfile, src, compress, res);
-
 }
 
 /**
@@ -33,82 +28,27 @@ exports.translate = function (req, res, compress, filename) {
     fs.stat(filepath, function (err, stats) {
         if (err) {
             //文件不存在
-            translate(fontName, "ttf", "svg", res);
-        } else if (stats.isFile()) {
-            //直接返回
-            var requestHeaders = req.headers;
-            res.setHeader("Content-Type", mime.lookup(filename) + ";charset=utf-8");
-            var lastModified = stats.mtime.toUTCString();
-            //如果没有修改，则返回304
-            if (requestHeaders["if-modified-since"] && lastModified == requestHeaders["if-modified-since"]) {
-                log.info("[NotModified]");
-                res.writeHead(304, "Not Modified");
-                res.end();
-                return;
+            if (extName == "ttf") {
+                res.writeHead(404, 'File Not Found!');
+            } else if (extName == "eot") {
+                //查找相应的ttf文件
+                var ttfPath = global.CONTENTPATH + "/fonts/ttf/" + fontName + ".ttf";
+                fs.stat(ttfPath, function (err2, stats2) {
+                    if (err2) {
+                        //ttf也不存在
+                        res.writeHead(404, 'File Not Found!');
+                    } else if (stats2.isFile()) {
+                        //尝试转换
+                        gulpfile.translateFonts(ttfPath, global.CONTENTPATH + "/fonts/eot/", filename, compress, res);
+                    }
+                });
             }
-            res.setHeader("Last-Modified", lastModified);
-            res.setHeader("Access-Control-Allow-Origin", "*");
-            //将文件写入response
-            res.statusCode = 200;
-            var file = fs.createReadStream(filepath);
-            file.on("open", function () {
-                if (compress === "gzip") {
-                    file.pipe(zlib.createGzip()).pipe(res);
-                } else if (compress === "deflate") {
-                    file.pipe(zlib.createDeflate()).pipe(res);
-                } else {
-                    file.pipe(res);
-                }
-            });
-            file.on('error', function (err) {
-                log.error(err);
-            });
+        } else if (stats.isFile()) {
+            // 直接返回文件
+            responseFile(req, res, filepath, stats, compress, filename);
             return;
         }
+        res.writeHead(404, 'File Not Found!');
     });
 
-}
-var TRANSDICTIONARY = {
-    "ttf": {
-        "eot": 0,
-        "woff": 1,
-        "svg": 2
-    },
-    "otf": {
-        "ttf": 3
-    },
-    "svg": {
-        "ttf": 4
-    }
-};
-
-function translate(font, origin, dest, res) {
-    var originpath = global.CONTENTPATH + "/fonts/" + origin + "/" + font + "." + origin;
-    var destpath = global.CONTENTPATH + "/fonts/" + dest + "/";
-    var destname = font + "." + dest;
-    var transtype = TRANSDICTIONARY[origin][dest];
-    switch (transtype) {
-        case 0: {
-            var fontmin = new Fontmin()
-                .src(originpath)
-                .use(Fontmin.ttf2eot())
-                .use(rename(destname))
-                .dest(destpath)
-                .run(function (err, files, stream) {
-                    
-                });
-            break;
-        }
-        case 2: {
-            var fontmin = new Fontmin()
-                .src(originpath)
-                .use(Fontmin.ttf2svg())
-                .use(rename(destname))
-                .dest(destpath)
-                .run(function (err, files, stream) {
-                    
-                });
-            break;
-        }
-    }
 }

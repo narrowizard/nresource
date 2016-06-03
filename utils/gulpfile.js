@@ -9,16 +9,39 @@ var order = require("gulp-order");
 var sass = require('gulp-sass');
 var rename = require('gulp-rename');
 var typescript = require('gulp-tsc');
+
 var remoteSrc = require('gulp-remote-src');
 var fontmin = require('gulp-fontmin');
 
+var ttf2eot = require('gulp-ttf2eot');
+
 var log = require('../utils/log');
+
+/**
+ * translateFonts 字体转换,ttf => eot
+ * ttf兼容所有的主流浏览器
+ * eot支持ie6+
+ * @param originpath ttf字体路径
+ * @param destpath eot字体目录
+ * @oaram destname eot字体名称
+ */
+exports.translateFonts = function (originpath, destpath, destname, compress, res) {
+    gulp.task('transFonts', function () {
+        gulp.src(originpath)
+            .pipe(ttf2eot())
+            .pipe(rename(destname))
+            .pipe(gulp.dest(destpath))
+            .pipe(gulpif(compress == "gzip", pako.gzip(), gulpif(compress == "deflate", pako.deflate())))
+            .pipe(respond(res));
+    });
+    gulp.start('transFonts');
+}
 
 
 exports.handleFonts = function (font, src, compress, res) {
     gulp.task('fontmin', function () {
         var buffers = [];
-        
+
         remoteSrc([""], { base: src })
             .on('data', function (file) {
                 buffers.push(file.contents);

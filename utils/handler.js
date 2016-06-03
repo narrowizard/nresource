@@ -4,6 +4,7 @@ var log = require('./log');
 var url = require('url');
 var qs = require('querystring');
 var mime = require('mime');
+var responseFile = require('../utils/file').responseFile;
 
 exports.handle = function (req, res) {
     var originUrl = req.url;
