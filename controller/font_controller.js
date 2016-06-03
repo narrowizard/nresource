@@ -42,6 +42,7 @@ exports.translate = function (req, res, compress, filename) {
                         gulpfile.translateFonts(ttfPath, global.CONTENTPATH + "/fonts/eot/", filename, compress, res);
                     }
                 });
+                return;
             }
         } else if (stats.isFile()) {
             // 直接返回文件
