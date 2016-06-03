@@ -9,8 +9,34 @@ var order = require("gulp-order");
 var sass = require('gulp-sass');
 var rename = require('gulp-rename');
 var typescript = require('gulp-tsc');
+var remoteSrc = require('gulp-remote-src');
+var fontmin = require('gulp-fontmin');
 
 var log = require('../utils/log');
+
+
+exports.handleFonts = function (font, src, compress, res) {
+    gulp.task('fontmin', function () {
+        var buffers = [];
+        
+        remoteSrc([""], { base: src })
+            .on('data', function (file) {
+                buffers.push(file.contents);
+            })
+            .on('end', function () {
+                var text = Buffer.concat(buffers).toString('utf-8');
+                gulp.src(font)
+                    .pipe(fontmin({
+                        text: text,
+                        onlyChinese: true
+                    }))
+                    .pipe(gulp.dest(global.CACHEPATH + "/fonts/"))
+                    // .pipe(gulpif(compress == "gzip", pako.gzip(), gulpif(compress == "deflate", pako.deflate())))
+                    .pipe(respond(res));
+            });
+    });
+    gulp.start('fontmin');
+}
 
 /**
  * handleJavascript 处理js文件

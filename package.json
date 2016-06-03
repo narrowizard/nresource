@@ -25,7 +25,9 @@
     "forever-monitor": "^1.7.0",
     "gulp-clean-css": "^2.0.6"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp-font-spider": "^0.3.6"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"

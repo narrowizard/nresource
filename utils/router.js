@@ -7,6 +7,8 @@ var static_controller = require('../controller/static_controller').handler;
 var ts_controller = require('../controller/ts_controller').handler;
 var tinyts_controller = require('../controller/ts_controller').tinyts;
 var tinyts_project_controller = require('../controller/ts_controller').project;
+var fontcompress_controller = require('../controller/font_controller').compress;
+var fonttranslate_controller = require('../controller/font_controller').translate;
 
 crossroads.ignoreState = true;
 
@@ -32,6 +34,10 @@ crossroads.addRoute(/\/static\/(.*?)\?(.*)/, static_controller);
 //静态文件处理器(不带参数)
 crossroads.addRoute('/static/{filename*}', static_controller);
 
+//font 字体(转换控制器)
+crossroads.addRoute('/font/{filename}', fonttranslate_controller);
+//font 字体(压缩控制器)
+crossroads.addRoute('/fontcompress/{filename}/:?param:', fontcompress_controller);
 
 crossroads.bypassed.add(function (req, res) {
     log.warning(req.url, ' route bypassed');
