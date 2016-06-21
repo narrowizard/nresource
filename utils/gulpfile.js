@@ -9,6 +9,7 @@ var order = require("gulp-order");
 var sass = require('gulp-sass');
 var rename = require('gulp-rename');
 var typescript = require('gulp-tsc');
+var insert = require('gulp-insert');
 
 var remoteSrc = require('gulp-remote-src');
 var fontmin = require('gulp-fontmin');
@@ -142,7 +143,8 @@ exports.tsCompiler = function (filename, filenames, compress, res) {
 
 }
 
-exports.tinytsCompiler = function (filename, filenames, compress, res) {
+exports.tinytsCompiler = function (project, viewmodel, filenames, compress, res) {
+    var filename = project + "/" + viewmodel;
     var tsconfig = {
         experimentalDecorators: true,
         emitDecoratorMetadata: true,
@@ -151,9 +153,14 @@ exports.tinytsCompiler = function (filename, filenames, compress, res) {
         emitError: false,
         out: filename
     };
+    var vmName = viewmodel.substr(0, viewmodel.lastIndexOf("."));
+    var className = vmName[0].toUpperCase() + vmName.substr(1);
+    var projectInit = 'require(["project/' + project + '/viewmodels/' + vmName + '"],function(vm){var model = new vm.' + className + 'Model();});';
+
     gulp.task('tinytsCore', function () {
         gulp.src(filenames)
             .pipe(typescript(tsconfig))
+            .pipe(insert.append(projectInit))
             .pipe(uglify({ mangle: false }))
             .pipe(gulp.dest(global.CACHEPATH + "/tinyts/"))
             .pipe(gulpif(compress == "gzip", pako.gzip(), gulpif(compress == "deflate", pako.deflate())))

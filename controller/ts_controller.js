@@ -26,6 +26,6 @@ exports.project = function (req, res, compress, projectname, viewmodel) {
     filenames.push("content/tinyts/third-party/*.ts");
     //增加tinyts接口声明
     filenames.push("content/tinyts/interfaces/*.ts");
-    gulpfile.tinytsCompiler(projectname + "/" + viewmodel, filenames, compress, res);
+    gulpfile.tinytsCompiler(projectname, viewmodel, filenames, compress, res);
 
 };
