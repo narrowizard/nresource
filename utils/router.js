@@ -26,8 +26,11 @@ crossroads.addRoute('/ts/{filename*}', ts_controller);
 
 //tinyts框架支持
 crossroads.addRoute('/tinyts/core.js/:?param:', tinyts_controller);
-//tinyts项目支持
-crossroads.addRoute('/tinyts/{projectname}/{viewmodel}/:?param:', tinyts_project_controller);
+
+//tinyts项目支持(带参数)
+crossroads.addRoute(/\/tinyts\/(.*?)\/([^?]*)\?(.*)/, tinyts_project_controller);
+//tinyts项目支持(不带参数)
+crossroads.addRoute('/tinyts/{projectname}/{viewmodel*}', tinyts_project_controller);
 
 //静态文件处理器(带参数)
 crossroads.addRoute(/\/static\/(.*?)\?(.*)/, static_controller);
