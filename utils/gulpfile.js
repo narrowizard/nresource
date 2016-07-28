@@ -7,6 +7,7 @@ var pako = require('gulp-pako');
 var gulpif = require('gulp-if');
 var order = require("gulp-order");
 var sass = require('gulp-sass');
+var compass = require('gulp-compass');
 var rename = require('gulp-rename');
 var typescript = require('gulp-tsc');
 var insert = require('gulp-insert');
@@ -107,12 +108,24 @@ exports.handleSass = function (filename, filepath, compress, res) {
         gulp.src(filepath)
             .pipe(sass().on('error', function (err) { log.error(err) }))
             .pipe(rename(filename))
-            .pipe(minifycss())
+            // .pipe(minifycss())
             .pipe(gulp.dest(global.CACHEPATH + "/sass/"))
             .pipe(gulpif(compress == "gzip", pako.gzip(), gulpif(compress == "deflate", pako.deflate())))
             .pipe(respond(res));
     });
     gulp.start("sass");
+}
+
+exports.handleCompass = function (filename, projectpath, compress, res) {
+    gulp.task('compass', function () {
+        gulp.src(filename)
+            .pipe(compass({
+                project: projectpath,
+                config_file: "config.rb"
+            }))
+            .pipe(gulp.dest(global.CACHEPATH + 'compass/'));
+    });
+    gulp.start('compass');
 }
 
 /**
@@ -128,13 +141,13 @@ exports.tsCompiler = function (filename, filenames, compress, res) {
         target: "ES5",
         emitDecoratorMetadata: true,
         module: "amd",
-        emitError: false
+        emitError: false,
+        out: filename
     };
     gulp.task('tsCompiler', function () {
         gulp.src(filenames)
             .pipe(typescript(tsconfig))
-            .pipe(concat(filename))
-            .pipe(uglify())
+            // .pipe(uglify())
             .pipe(gulp.dest(global.CACHEPATH + "/ts/"))
             .pipe(gulpif(compress == "gzip", pako.gzip(), gulpif(compress == "deflate", pako.deflate())))
             .pipe(respond(res));
@@ -151,7 +164,8 @@ exports.tinytsCompiler = function (project, viewmodel, filenames, compress, res)
         target: "ES5",
         module: "amd",
         emitError: false,
-        out: filename
+        out: filename,
+        pretty: true
     };
     var vmName = viewmodel.substr(0, viewmodel.lastIndexOf("."));
     var className;

@@ -3,12 +3,14 @@ var crossroads = require('crossroads');
 var js_controller = require('../controller/js_controller').handler;
 var css_controller = require('../controller/css_controller').handler;
 var sass_controller = require('../controller/sass_controller').handler;
+var compass_controller = require('../controller/sass_controller').compass;
 var static_controller = require('../controller/static_controller').handler;
 var ts_controller = require('../controller/ts_controller').handler;
 var tinyts_controller = require('../controller/ts_controller').tinyts;
 var tinyts_project_controller = require('../controller/ts_controller').project;
 var fontcompress_controller = require('../controller/font_controller').compress;
 var fonttranslate_controller = require('../controller/font_controller').translate;
+
 
 crossroads.ignoreState = true;
 
@@ -18,6 +20,9 @@ crossroads.addRoute('/js/{filename}/:?param:', js_controller);
 crossroads.addRoute('/css/{filename}/:?param:', css_controller);
 //sass
 crossroads.addRoute('/sass/{filename}/:?param:', sass_controller);
+//compass project without params
+crossroads.addRoute('/compass/{filename*}', compass_controller);
+crossroads.addRoute('/\/compass\/(.*?)\?(.*)', compass_controller);
 
 //typescript(带参数)
 crossroads.addRoute(/\/ts\/(.*?)\?(.*)/, ts_controller);

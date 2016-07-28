@@ -25,3 +25,26 @@ exports.handler = function (req, res, compress, filename) {
     });
 
 }
+
+exports.compass = function (req, res, compress, filename) {
+    var filepath = global.CONTENTPATH + "compass/" + filename.substr(0, filename.lastIndexOf(".")) + "/";
+    var filename = global.CONTENTPATH + "compass/" + filename.substr(0, filename.lastIndexOf(".")) + '/sass/main.' + global.SASS;
+    var configpath = filepath + "config.rb";
+    fs.stat(configpath, function (err, stats) {
+        if (err) {
+
+        } else if (stats.isFile()) {
+            //content type
+            res.setHeader("Content-Type", mime.lookup("css") + ";charset=utf-8");
+
+            var lastModified = (new Date()).toUTCString();
+            res.setHeader("Last-Modified", lastModified);
+
+            gulpfile.handleCompass(filename, filepath, compress, res);
+            return;
+        }
+        log.info("[NotFound]");
+        res.writeHead(404, "file not found!");
+        res.end();
+    });
+}
