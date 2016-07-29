@@ -4,6 +4,8 @@ var fs = require('fs');
 var log = require('../utils/log');
 var EXTNAME = "sass";
 
+var compass = require('compass');
+
 exports.handler = function (req, res, compress, filename) {
     var filepath = global.CONTENTPATH + EXTNAME + "/" + filename.substr(0, filename.lastIndexOf(".")) + "/main." + global.SASS;
     fs.stat(filepath, function (err, stats) {
@@ -39,8 +41,16 @@ exports.compass = function (req, res, compress, filename) {
 
             var lastModified = (new Date()).toUTCString();
             res.setHeader("Last-Modified", lastModified);
-
-            gulpfile.handleCompass(filename, filepath, compress, res);
+            compass.compile({ cwd: filepath }, function (err, stdout, stderr) {
+                if (err) {
+                    log.error(err);
+                    res.writeHead(500, "compile failed");
+                } else {
+                    //编译成功
+                    res.writeHead(200, "succ");
+                }
+                res.end();
+            });
             return;
         }
         log.info("[NotFound]");
