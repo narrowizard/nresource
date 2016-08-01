@@ -29,9 +29,6 @@ crossroads.addRoute(/\/ts\/(.*?)\?(.*)/, ts_controller);
 //typecript(不带参数)
 crossroads.addRoute('/ts/{filename*}', ts_controller);
 
-//tinyts框架支持
-crossroads.addRoute('/tinyts/core.js/:?param:', tinyts_controller);
-
 //tinyts项目支持(带参数)
 crossroads.addRoute(/\/tinyts\/(.*?)\/([^?]*)\?(.*)/, tinyts_project_controller);
 //tinyts项目支持(不带参数)

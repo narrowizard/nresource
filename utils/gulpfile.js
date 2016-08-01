@@ -7,9 +7,8 @@ var pako = require('gulp-pako');
 var gulpif = require('gulp-if');
 var order = require("gulp-order");
 var sass = require('gulp-sass');
-var compass = require('gulp-compass');
 var rename = require('gulp-rename');
-var typescript = require('gulp-tsc');
+var typescript = require('gulp-typescript');
 var insert = require('gulp-insert');
 
 var remoteSrc = require('gulp-remote-src');
@@ -116,18 +115,6 @@ exports.handleSass = function (filename, filepath, compress, res) {
     gulp.start("sass");
 }
 
-exports.handleCompass = function (filename, projectpath, compress, res) {
-    gulp.task('compass', function () {
-        gulp.src(filename)
-            .pipe(compass({
-                project: projectpath,
-                config_file: "config.rb"
-            }))
-            .pipe(gulp.dest(global.CACHEPATH + 'compass/'));
-    });
-    gulp.start('compass');
-}
-
 /**
  * tsCompiler 编译ts文件并返回
  * @param filename 缓存文件名
@@ -141,7 +128,6 @@ exports.tsCompiler = function (filename, filenames, compress, res) {
         target: "ES5",
         emitDecoratorMetadata: true,
         module: "amd",
-        emitError: false,
         out: filename
     };
     gulp.task('tsCompiler', function () {
@@ -163,9 +149,9 @@ exports.tinytsCompiler = function (project, viewmodel, filenames, compress, res)
         emitDecoratorMetadata: true,
         target: "ES5",
         module: "amd",
-        emitError: false,
         out: filename,
-        pretty: true
+        pretty: true,
+        moduleResolution: "node"
     };
     var vmName = viewmodel.substr(0, viewmodel.lastIndexOf("."));
     var className;
