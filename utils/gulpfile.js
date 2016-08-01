@@ -161,7 +161,7 @@ exports.tinytsCompiler = function (project, viewmodel, filenames, compress, res)
         className = vmName;
     }
     className = className[0].toUpperCase() + className.substr(1);
-    var projectInit = 'require(["project/' + project + '/viewmodels/' + vmName + '"],function(vm){var model = new vm.' + className + 'Model();});';
+    var projectInit = 'require(["viewmodels/' + vmName + '"],function(vm){var model = new vm.' + className + 'Model();});';
 
     gulp.task('tinytsCore', function () {
         gulp.src(filenames)
