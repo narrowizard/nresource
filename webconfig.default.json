@@ -1,14 +1,14 @@
 {
-    "port": 8124,
-    "contentPath": "content/",
-    "cachePath": "cached/",
-    "mode": "debug",
-    "maxAge": {
+    "port": 8124,   // http port
+    "contentPath": "content/",  // content path
+    "cachePath": "cached/", // cache path,it means content/cached/
+    "mode": "debug",    // debug or release
+    "maxAge": {     // cache time
         "days": 365,
         "hours": 0,
         "minutes": 0,
         "seconds": 0
     },
-    "sassMode": "scss",
-    "useCache": true
+    "sassMode": "scss", // sass or scss
+    "useCache": true    // whether use cache or not
 }
