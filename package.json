@@ -1,6 +1,6 @@
 {
   "name": "nresource",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "description": "一个基于nodejs的静态资源文件服务器",
   "main": "app.js",
   "dependencies": {

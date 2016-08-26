@@ -175,3 +175,7 @@ exports.tinytsCompiler = function (project, viewmodel, filenames, compress, res)
     gulp.start('tinytsCore');
 
 }
+
+exports.tinytsTest = function () {
+
+}

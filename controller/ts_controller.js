@@ -19,3 +19,9 @@ exports.project = function (req, res, compress, projectname, viewmodel) {
     gulpfile.tinytsCompiler(projectname, viewmodel, filenames, compress, res);
 
 };
+
+exports.test = function (req, res, compress, projectname, testname) {
+    res.setHeader("Content-Type", mime.lookup("js") + ";charset=utf-8");
+    var projectpath = global.CONTENTPATH + "project/" + projectname + "/autotest/";
+
+}

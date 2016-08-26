@@ -7,6 +7,7 @@ var compass_controller = require('../controller/sass_controller').compass;
 var static_controller = require('../controller/static_controller').handler;
 var ts_controller = require('../controller/ts_controller').handler;
 var tinyts_controller = require('../controller/ts_controller').tinyts;
+var tinytest_controller = require('../controller/ts_controller').test;
 var tinyts_project_controller = require('../controller/ts_controller').project;
 var fontcompress_controller = require('../controller/font_controller').compress;
 var fonttranslate_controller = require('../controller/font_controller').translate;
@@ -33,6 +34,11 @@ crossroads.addRoute('/ts/{filename*}', ts_controller);
 crossroads.addRoute(/\/tinyts\/(.*?)\/([^?]*)\?(.*)/, tinyts_project_controller);
 //tinyts项目支持(不带参数)
 crossroads.addRoute('/tinyts/{projectname}/{viewmodel*}', tinyts_project_controller);
+
+//tinyts测试支持(带参数)
+crossroads.addRoute(/\/tinytest\/(.*?)\/([^?]*)\?(.*)/,tinytest_controller);
+//tinyts测试支持(不带参数)
+crossroads.addRoute('/tinytest/{projectname}/{testname*}', tinytest_controller);
 
 //静态文件处理器(带参数)
 crossroads.addRoute(/\/static\/(.*?)\?(.*)/, static_controller);
