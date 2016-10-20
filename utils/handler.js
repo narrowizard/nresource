@@ -79,6 +79,8 @@ exports.handle = function (req, res) {
                 return;
             }
             res.setHeader("Last-Modified", lastModified);
+            // 允许跨域访问
+            res.setHeader("Access-Control-Allow-Origin", "*");
             //将文件写入response
             res.statusCode = 200;
             log.info('[Success]', cachePath);
